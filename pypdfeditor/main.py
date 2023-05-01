@@ -12,7 +12,7 @@ class Command(StrEnum):
 
 class SplitArgs(NamedTuple):
     source_file: str
-    page_range: str
+    pages: str
 
 
 class Args(NamedTuple):
@@ -32,8 +32,8 @@ def read_args() -> Args:
     )
     split_parser.add_argument("source_file", help="Path to the source PDF file")
     split_parser.add_argument(
-        "-r",
-        "--range",
+        "-p",
+        "--pages",
         help="Specify page ranges to split on (e.g. '1-5,8-10')",
         required=True,
     )
@@ -45,7 +45,7 @@ def read_args() -> Args:
             command=args.command,
             options=SplitArgs(
                 source_file=args.source_file,
-                page_range=args.range,
+                pages=args.pages,
             ),
         )
     else:
