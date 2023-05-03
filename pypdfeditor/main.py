@@ -2,8 +2,7 @@
 
 import argparse
 
-from typing import NamedTuple
-from enum import StrEnum
+from type_definitions import Args, Command
 
 
 class Command(StrEnum):
