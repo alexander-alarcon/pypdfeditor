@@ -31,7 +31,7 @@ class TestReadArgs:
         with pytest.raises(SystemExit):
             read_args()
 
-    def test_read_args_split_without_arguments(self, monkeypatch) -> None:
+    def test_read_args_split_without_arguments(self, monkeypatch: MonkeyPatch) -> None:
         """
         Test case: should raise exception when split command is provided without required arguments
         """
@@ -42,7 +42,7 @@ class TestReadArgs:
         with pytest.raises(SystemExit):
             read_args()
 
-    def test_read_args_split_with_arguments(self, monkeypatch) -> None:
+    def test_read_args_split_with_arguments(self, monkeypatch: MonkeyPatch) -> None:
         """
         Test case: should return Args object when split command is provided with required arguments
         """
