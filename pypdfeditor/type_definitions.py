@@ -1,5 +1,5 @@
-from typing import NamedTuple
 from enum import StrEnum
+from typing import NamedTuple
 
 
 class Command(StrEnum):
