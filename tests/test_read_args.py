@@ -2,7 +2,8 @@ import pytest
 
 from pytest import MonkeyPatch
 
-import pypdfeditor.main as m
+from pypdfeditor.type_definitions import Args, Command, SplitArgs
+from pypdfeditor.read_args import read_args
 
 
 class TestReadArgs:
@@ -28,7 +29,7 @@ class TestReadArgs:
             ["pypdfeditor", invalid_command],
         )
         with pytest.raises(SystemExit):
-            m.main()
+            read_args()
 
     def test_read_args_split_without_arguments(self, monkeypatch) -> None:
         """
@@ -39,7 +40,7 @@ class TestReadArgs:
             ["pypdfeditor", "split"],
         )
         with pytest.raises(SystemExit):
-            m.main()
+            read_args()
 
     def test_read_args_split_with_arguments(self, monkeypatch) -> None:
         """
@@ -49,9 +50,9 @@ class TestReadArgs:
             "sys.argv",
             ["pypdfeditor", "split", "test.pdf", "-p", "1-3"],
         )
-        args: m.Args = m.read_args()
-        expected_args: m.Args = m.Args(
-            command=m.Command.SPLIT,
-            options=m.SplitArgs(source_file="test.pdf", pages="1-3"),
+        args: Args = read_args()
+        expected_args: Args = Args(
+            command=Command.SPLIT,
+            options=SplitArgs(source_file="test.pdf", pages="1-3"),
         )
         assert args == expected_args

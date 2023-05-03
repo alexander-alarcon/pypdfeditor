@@ -1,6 +1,6 @@
 from argparse import ArgumentParser, _SubParsersAction, Namespace, ArgumentError
 
-from type_definitions import Args, Command, SplitArgs
+from .type_definitions import Args, Command, SplitArgs
 
 
 def read_args() -> Args:
