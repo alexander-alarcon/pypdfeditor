@@ -1,0 +1,218 @@
+from argparse import ArgumentTypeError
+from pathlib import Path
+from typing import Literal
+
+import pytest
+from pytest import MonkeyPatch
+
+from pypdfeditor.type_definitions import SplitArgs
+from pypdfeditor.validator import validate_split_args
+
+
+class TestValidateSplitArgs:
+    @pytest.mark.parametrize(
+        "file",
+        [
+            "document1.pdf",
+            "report.pdf",
+            "ebook.pdf",
+            "article.pdf",
+            "manual.pdf",
+            "guide.pdf",
+            "brochure.pdf",
+            "for.pdf",
+            "catalog.pdf",
+            "newsletter.pdf",
+        ],
+    )
+    def test_validate_split_args_with_existing_pdf(
+        self, monkeypatch: MonkeyPatch, file: str
+    ) -> None:
+        """
+        Test case: `validate_split_args` does not raise an exception when provided with valid input.
+        """
+
+        def mock_exists(path) -> Literal[True]:
+            return True
+
+        monkeypatch.setattr(Path, "exists", mock_exists)
+        args = SplitArgs(source_file=file, pages="1-3")
+        assert validate_split_args(args) is None
+
+    @pytest.mark.parametrize(
+        "missing_file",
+        [
+            "missing_document1.pdf",
+            "missing_report.pdf",
+            "missing_ebook.pdf",
+            "missing_article.pdf",
+            "missing_manual.pdf",
+            "missing_guide.pdf",
+            "missing_brochure.pdf",
+            "missing_forpdf",
+            "missing_catalog.pdf",
+            "missing_newsletter.pdf",
+        ],
+    )
+    def test_validate_split_args_with_non_existing_pdf(
+        self, monkeypatch: MonkeyPatch, missing_file: str
+    ) -> None:
+        """
+        Test case: `validate_split_args` raise an exception when provided with invalid source file input.
+        """
+
+        def mock_exists(path) -> Literal[False]:
+            return False
+
+        monkeypatch.setattr(Path, "exists", mock_exists)
+        args = SplitArgs(source_file=missing_file, pages="1-3")
+        with pytest.raises(ArgumentTypeError) as e:
+            validate_split_args(args)
+        assert str(e.value) == "Error: Source file does not exist."
+
+    @pytest.mark.parametrize(
+        "file",
+        [
+            "missing.txt",
+            "missing.png",
+            "missing.jpg" "missing.html",
+            "report.docx",
+            "image.jpeg",
+            "presentation.ppt",
+            "audio.mp3",
+            "video.mp4",
+            "spreadsheet.xlsx",
+            "text.txt",
+            "code.py",
+            "archive.zip",
+            "executable.exe",
+        ],
+    )
+    def test_validate_split_args_with_non_pdf_files(
+        self, monkeypatch: MonkeyPatch, file: str
+    ) -> None:
+        """
+        Test case: `validate_split_args` raise an exception when provided non pdf file input.
+        """
+
+        def mock_exists(path) -> Literal[True]:
+            return True
+
+        monkeypatch.setattr(Path, "exists", mock_exists)
+        args = SplitArgs(source_file=file, pages="1-3")
+        with pytest.raises(ArgumentTypeError) as e:
+            validate_split_args(args)
+        assert str(e.value) == "Error: Source file is not a PDF file."
+
+    @pytest.mark.parametrize(
+        "file, pages",
+        [
+            (
+                "my_file.pdf",
+                "1-10",
+            ),
+            (
+                "my_file.pdf",
+                "2-4,7,9-12",
+            ),
+            (
+                "my_file.pdf",
+                "1,4-7,10",
+            ),
+            (
+                "my_file.pdf",
+                "3-3",
+            ),
+            (
+                "my_file.pdf",
+                "1-1000,1001-2000,2001-2500",
+            ),
+            (
+                "my_file.pdf",
+                "1,3-5,7,10-12",
+            ),
+            (
+                "my_file.pdf",
+                "1-3,3-5,6-8",
+            ),
+            (
+                "my_file.pdf",
+                "1-2,2-2,2-3,3-3",
+            ),
+            (
+                "my_file.pdf",
+                "1-10,20,30-40,50-60,70,80-90,100",
+            ),
+        ],
+    )
+    def test_validate_split_args_with_valid_pages(
+        self, monkeypatch: MonkeyPatch, file: str, pages: str
+    ) -> None:
+        """
+        Test case: `validate_split_args` does not raise an exception when provided with valid pages input.
+        """
+
+        def mock_exists(path) -> Literal[True]:
+            return True
+
+        monkeypatch.setattr(Path, "exists", mock_exists)
+        args = SplitArgs(source_file=file, pages=pages)
+        assert validate_split_args(args) is None
+
+    @pytest.mark.parametrize(
+        "file, pages",
+        [
+            (
+                "my_file.pdf",
+                "1,2,3-",
+            ),
+            (
+                "my_file.pdf",
+                "-4,6,7",
+            ),
+            (
+                "my_file.pdf",
+                "1-5-7",
+            ),
+            (
+                "my_file.pdf",
+                "0",
+            ),
+            (
+                "my_file.pdf",
+                "1--5",
+            ),
+            (
+                "my_file.pdf",
+                "1-5-8,9-12",
+            ),
+            (
+                "my_file.pdf",
+                "1-5,0",
+            ),
+            (
+                "my_file.pdf",
+                "1-2,2-1,0",
+            ),
+            (
+                "my_file.pdf",
+                "1-3,3-5,",
+            ),
+        ],
+    )
+    def test_validate_split_args_with_invalid_pages(
+        self, monkeypatch: MonkeyPatch, file: str, pages: str
+    ) -> None:
+        """
+        Test case: `validate_split_args` does not raise an exception when provided with valid pages input.
+        """
+
+        def mock_exists(path) -> Literal[True]:
+            return True
+
+        monkeypatch.setattr(Path, "exists", mock_exists)
+        args = SplitArgs(source_file=file, pages=pages)
+
+        with pytest.raises(ArgumentTypeError) as e:
+            validate_split_args(args)
+        assert str(e.value) == "Error: Invalid range format."
