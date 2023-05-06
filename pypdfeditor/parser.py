@@ -12,3 +12,14 @@ def parse_page_range(pages: str) -> set[int]:
         pages_set |= page_set
 
     return pages_set
+
+
+def parse_page_ranges(pages: str) -> list[set[int]]:
+    page_ranges = []
+    for page_range in pages.split(","):
+        if "-" in page_range:
+            start, end = map(int, page_range.split("-"))
+            page_ranges.append(set(range(start, end + 1)))
+        else:
+            page_ranges.append({int(page_range)})
+    return page_ranges
