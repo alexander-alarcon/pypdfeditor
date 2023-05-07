@@ -1,6 +1,6 @@
 from functools import partial
 from pathlib import Path
-from typing import Callable, Union
+from typing import Callable
 
 from PyPDF2 import PdfReader, PdfWriter
 from type_definitions import SplitMode
@@ -84,11 +84,9 @@ def split_pdf(
 
     filename: str = Path(source_file).stem
 
-    split_func: Union[
-        Callable[[PdfReader, str, set[int]], None],
-        Callable[[PdfReader, str, list[set[int]]], None],
-        None,
-    ] = None
+    split_func: Callable[[PdfReader, str, set[int]], None] | Callable[
+        [PdfReader, str, list[set[int]]], None
+    ] | None = None
 
     match mode:
         case SplitMode.SINGLE_FILE:
@@ -110,3 +108,23 @@ def split_pdf(
             raise ValueError(f"Error: Unsupported split mode: {mode}")
 
     split_func(reader=reader, filename=filename)
+
+
+def merge_pdf(
+    output_file: str,
+    input_files: list[str],
+) -> None:
+    merger = PdfWriter()
+    for file in input_files:
+        if ":" in file:
+            filename: str
+            page_range: str
+            filename, page_range = file.split(":")
+            reader = PdfReader(filename)
+            for page in parse_page_range(page_range):
+                merger.add_page(reader.pages[page - 1])
+        else:
+            merger.append(file)
+
+    merger.write(output_file)
+    merger.close()

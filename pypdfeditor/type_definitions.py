@@ -1,9 +1,10 @@
 from enum import StrEnum
-from typing import NamedTuple
+from typing import Generic, NamedTuple, TypeVar
 
 
 class Command(StrEnum):
     SPLIT = "split"
+    MERGE = "merge"
 
 
 class SplitMode(StrEnum):
@@ -18,6 +19,14 @@ class SplitArgs(NamedTuple):
     mode: SplitMode = SplitMode.SINGLE_FILE
 
 
-class Args(NamedTuple):
+class MergeArgs(NamedTuple):
+    output_file: str
+    input_files: list[str]
+
+
+T = TypeVar("T", SplitArgs, MergeArgs)
+
+
+class Args(NamedTuple, Generic[T]):
     command: Command
-    options: SplitArgs
+    options: T
