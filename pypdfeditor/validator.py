@@ -4,7 +4,7 @@ from argparse import ArgumentTypeError
 from pathlib import Path
 from typing import Optional
 
-from type_definitions import Args, Command, MergeArgs, SplitArgs
+from type_definitions import Args, Command, EncryptArgs, MergeArgs, SplitArgs
 
 
 def file_exists(path: str, error_message: str) -> None:
@@ -79,9 +79,19 @@ def validate_merge_args(args: MergeArgs) -> None:
     validate_input_files(args.input_files)
 
 
+def validate_encrypt_args(args: EncryptArgs) -> None:
+    file_exists(
+        args.input_file,
+        f"Error: Input file <{args.input_file}> does not exist",
+    )
+    is_valid_pdf(args.input_file)
+
+
 def validate_args(args: Args) -> None:
     match args.command:
         case Command.SPLIT:
             validate_split_args(args=args.options)
         case Command.MERGE:
             validate_merge_args(args=args.options)
+        case Command.ENCRYPT:
+            validate_encrypt_args(args=args.options)
