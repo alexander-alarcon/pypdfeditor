@@ -7,11 +7,20 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+pypdf2 = "^3.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
+pytest = "^7.3.1"
+pytest-mock = "^3.10.0"
+mock = "^5.0.2"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+pythonpath = ["pypdfeditor"]
+mock_use_standalone_module = true
