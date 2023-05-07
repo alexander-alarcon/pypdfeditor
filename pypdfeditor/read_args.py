@@ -6,7 +6,7 @@ from argparse import (
     _SubParsersAction,
 )
 
-from type_definitions import Args, Command, MergeArgs, SplitArgs, SplitMode
+from type_definitions import Args, Command, EncryptArgs, MergeArgs, SplitArgs, SplitMode
 
 
 def read_args() -> Args:
@@ -76,6 +76,16 @@ def read_args() -> Args:
         metavar="FILE",
     )
 
+    encrypt_parser: ArgumentParser = subparser.add_parser(
+        Command.ENCRYPT,
+        help="Encrypts a PDF file by adding or replacing the password.",
+    )
+    encrypt_parser.add_argument(
+        "input_file",
+        help="Path to an existing PDF file",
+        metavar="FILE",
+    )
+
     args: Namespace = parser.parse_args()
 
     match args.command:
@@ -95,6 +105,11 @@ def read_args() -> Args:
                     input_files=args.input_files,
                     output_file=args.output_file,
                 ),
+            )
+        case Command.ENCRYPT:
+            return Args[EncryptArgs](
+                command=args.command,
+                options=EncryptArgs(input_file=args.input_file),
             )
         case _:
             raise ArgumentError(None, "Error: Invalid command")

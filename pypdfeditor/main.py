@@ -4,9 +4,9 @@ from argparse import ArgumentError, ArgumentTypeError
 from typing import Optional
 
 from read_args import read_args
-from type_definitions import Args, MergeArgs, SplitArgs
+from type_definitions import Args, EncryptArgs, MergeArgs, SplitArgs
 
-from pypdfeditor.commands import CliCommand, MergeCommand, SplitCommand
+from pypdfeditor.commands import CliCommand, EncryptCommand, MergeCommand, SplitCommand
 from pypdfeditor.validator import validate_args
 
 
@@ -21,6 +21,8 @@ def main() -> None:
             command = SplitCommand(options=args.options)
         elif isinstance(args.options, MergeArgs):
             command = MergeCommand(options=args.options)
+        elif isinstance(args.options, EncryptArgs):
+            command = EncryptCommand(options=args.options)
         else:
             raise ValueError(f"Invalid command {args.command}")
 

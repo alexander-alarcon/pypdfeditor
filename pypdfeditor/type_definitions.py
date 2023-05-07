@@ -5,6 +5,7 @@ from typing import Generic, NamedTuple, TypeVar
 class Command(StrEnum):
     SPLIT = "split"
     MERGE = "merge"
+    ENCRYPT = "encrypt"
 
 
 class SplitMode(StrEnum):
@@ -24,7 +25,11 @@ class MergeArgs(NamedTuple):
     input_files: list[str]
 
 
-T = TypeVar("T", SplitArgs, MergeArgs)
+class EncryptArgs(NamedTuple):
+    input_file: str
+
+
+T = TypeVar("T", SplitArgs, MergeArgs, EncryptArgs)
 
 
 class Args(NamedTuple, Generic[T]):
