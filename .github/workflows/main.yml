@@ -29,6 +29,9 @@ jobs:
       - name: Install project dependencies
         run: poetry install --no-root --with dev
 
+      - name: Install project dev dependencies
+        run: poetry add pytest --group dev
+        
       - name: Run pre-push tests
         run: poetry run pytest -p no:warnings
 
@@ -51,6 +54,9 @@ jobs:
 
       - name: Install project dependencies
         run: poetry install --no-root --with dev
+
+      - name: Install project dev dependencies
+        run: poetry add pytest --group dev
 
       - name: Run pre-PR tests
         run: poetry run pytest -p no:warnings
