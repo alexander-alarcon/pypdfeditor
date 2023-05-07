@@ -1,0 +1,56 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  pre-push-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.poetry/bin:$PATH"
+
+      - name: Install project dependencies
+        run: poetry install --no-root --no-dev
+
+      - name: Run pre-push tests
+        run: poetry run pytest -p no:warnings
+
+  pre-pr-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.poetry/bin:$PATH"
+
+      - name: Install project dependencies
+        run: poetry install --no-root --no-dev
+
+      - name: Run pre-PR tests
+        run: poetry run pytest -p no:warnings
