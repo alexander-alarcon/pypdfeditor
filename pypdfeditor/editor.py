@@ -1,4 +1,5 @@
 from functools import partial
+from getpass import getpass
 from pathlib import Path
 from typing import Callable
 
@@ -128,3 +129,23 @@ def merge_pdf(
 
     merger.write(output_file)
     merger.close()
+
+
+def encrypt_pdf(input_file: str) -> None:
+    reader = PdfReader(input_file)
+    writer = PdfWriter()
+
+    if reader.is_encrypted:
+        old_password: str = getpass(prompt="Enter the current password: ")
+        reader.decrypt(password=old_password)
+
+    writer.clone_document_from_reader(reader)
+    new_password: str = getpass(
+        prompt="Enter the new password (leave empty to remove the password): "
+    )
+
+    if new_password is not "":
+        writer.encrypt(new_password)
+
+    with open(input_file, "wb") as file:
+        writer.write(file)

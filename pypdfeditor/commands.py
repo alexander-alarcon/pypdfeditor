@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from re import I
 from typing import Generic
 
 from pypdfeditor.editor import encrypt_pdf, merge_pdf, split_pdf
@@ -41,4 +42,4 @@ class EncryptCommand(CliCommand[EncryptArgs]):
     options: EncryptArgs
 
     def execute(self) -> None:
-        print(self.options)
+        encrypt_pdf(input_file=self.options.input_file)
