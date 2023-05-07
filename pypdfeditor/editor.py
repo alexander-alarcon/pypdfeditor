@@ -1,6 +1,6 @@
 from functools import partial
 from pathlib import Path
-from typing import Callable, Union
+from typing import Callable
 
 from PyPDF2 import PdfReader, PdfWriter
 from type_definitions import SplitMode
@@ -84,11 +84,9 @@ def split_pdf(
 
     filename: str = Path(source_file).stem
 
-    split_func: Union[
-        Callable[[PdfReader, str, set[int]], None],
-        Callable[[PdfReader, str, list[set[int]]], None],
-        None,
-    ] = None
+    split_func: Callable[[PdfReader, str, set[int]], None] | Callable[
+        [PdfReader, str, list[set[int]]], None
+    ] | None = None
 
     match mode:
         case SplitMode.SINGLE_FILE:

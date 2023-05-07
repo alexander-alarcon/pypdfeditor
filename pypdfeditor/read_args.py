@@ -6,7 +6,7 @@ from argparse import (
     _SubParsersAction,
 )
 
-from type_definitions import Args, Command, SplitArgs, SplitMode
+from type_definitions import Args, Command, MergeArgs, SplitArgs, SplitMode
 
 
 def read_args() -> Args:
@@ -45,16 +45,44 @@ def read_args() -> Args:
         metavar="",
     )
 
+    merge_parser: ArgumentParser = subparser.add_parser(
+        Command.MERGE,
+        help="Merge multiple PDF files into one PDF file",
+    )
+    merge_parser.add_argument(
+        "-o",
+        "--output-file",
+        help="Specify the name of the resulting merged PDF file",
+        required=True,
+        metavar="FILE",
+    )
+    merge_parser.add_argument(
+        "-i",
+        "--input-files",
+        help="Specify two or more input PDF files to merge into a single PDF file. At least 2 input files are required.",
+        required=True,
+        action="append",
+        metavar="FILE",
+    )
+
     args: Namespace = parser.parse_args()
 
     match args.command:
         case Command.SPLIT:
-            return Args(
+            return Args[SplitArgs](
                 command=args.command,
                 options=SplitArgs(
                     source_file=args.source_file,
                     pages=args.pages,
                     mode=args.mode,
+                ),
+            )
+        case Command.MERGE:
+            return Args[MergeArgs](
+                command=args.command,
+                options=MergeArgs(
+                    input_files=args.input_files,
+                    output_file=args.output_file,
                 ),
             )
         case _:
