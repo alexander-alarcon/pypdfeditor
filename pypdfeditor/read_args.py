@@ -48,6 +48,7 @@ def read_args() -> Args:
     merge_parser: ArgumentParser = subparser.add_parser(
         Command.MERGE,
         help="Merge multiple PDF files into one PDF file",
+        formatter_class=RawTextHelpFormatter,
     )
     merge_parser.add_argument(
         "-o",
@@ -59,7 +60,17 @@ def read_args() -> Args:
     merge_parser.add_argument(
         "-i",
         "--input-files",
-        help="Specify two or more input PDF files to merge into a single PDF file. At least 2 input files are required.",
+        help="""Specify two or more input PDF files to merge into a single PDF file. At least 2 input files are required.
+
+    Available formats:
+    - filename: Path to an existing PDF file.
+    - filename:page_range: Path to an existing PDF file and a page range to merge from that file.
+
+    Example usage:
+    - file1.pdf
+    - file2.pdf:1-3
+    - file3.pdf:4,6-8
+        """,
         required=True,
         action="append",
         metavar="FILE",
