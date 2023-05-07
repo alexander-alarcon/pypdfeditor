@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Generic
 
-from pypdfeditor.editor import split_pdf
+from pypdfeditor.editor import merge_pdf, split_pdf
 from pypdfeditor.type_definitions import MergeArgs, SplitArgs, T
 
 
@@ -30,5 +30,7 @@ class MergeCommand(CliCommand[MergeArgs]):
     options: MergeArgs
 
     def execute(self) -> None:
-        print(self)
-        pass
+        merge_pdf(
+            output_file=self.options.output_file,
+            input_files=self.options.input_files,
+        )
