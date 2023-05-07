@@ -27,7 +27,7 @@ jobs:
           export PATH="$HOME/.poetry/bin:$PATH"
 
       - name: Install project dependencies
-        run: poetry install --no-root --no-dev
+        run: poetry install --no-root
 
       - name: Run pre-push tests
         run: poetry run pytest -p no:warnings
@@ -50,7 +50,7 @@ jobs:
           export PATH="$HOME/.poetry/bin:$PATH"
 
       - name: Install project dependencies
-        run: poetry install --no-root --no-dev
+        run: poetry install --no-root
 
       - name: Run pre-PR tests
         run: poetry run pytest -p no:warnings
